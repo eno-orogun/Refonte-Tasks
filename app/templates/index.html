@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do List</title>
+</head>
+<body>
+    <h1>To-Do List</h1>
+    <ul>
+        {% for task in tasks %}
+            <!-- Automatically escape variables to prevent XSS -->
+            <li>{{ task | escape }}</li>
+        {% endfor %}
+    </ul>
+    
+    <!-- CSRF token implementation (assumed server-side generation) -->
+    <form action="/add" method="POST">
+        <input type="text" name="content" placeholder="Enter a task" required>
+        <!-- CSRF token for protection -->
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <button type="submit">Add Task</button>
+    </form>
+
+    <!-- CSRF token for delete form -->
+    <form action="/delete" method="POST">
+        <input type="number" name="index" placeholder="Task index to delete" required min="0">
+        <!-- CSRF token for protection -->
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <button type="submit">Delete Task</button>
+    </form>
+</body>
+</html>
