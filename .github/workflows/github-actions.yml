@@ -32,7 +32,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install pylint
-          pip install --no-cache-dir -v -r requirements.txt
+          pip install --no-cache-dir -v -r app/requirements.txt
 
       # Run static code analysis with pylint
       - name: Run static code analysis
