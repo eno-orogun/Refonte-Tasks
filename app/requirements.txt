@@ -67,7 +67,6 @@ smmap==6.0.0
 stevedore==5.1.0
 systemd-python==235
 typing_extensions==4.10.0
-ubuntu-drivers-common==0.0.0
 ubuntu-pro-client==8001
 ufw==0.36.2
 unattended-upgrades==0.1
