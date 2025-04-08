@@ -42,7 +42,7 @@ jobs:
       # Build the Docker Image
       - name: Build the Docker Image
         run: |
-          docker builde -t todo-app  .
+          docker buildx -t todo-app  .
 
       # Run Trivy to scan the Docker image for vulnerabilities
       - name: Scan Docker Image with Trivy
