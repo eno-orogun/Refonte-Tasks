@@ -28,7 +28,9 @@ jobs:
           ls  -R
 
       - name: Install system dependencies for dbus-python
-        run: sudo apt-get update && sudo apt-get install -y libdbus-1-dev
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libdbus-1-dev libglib2.0-dev
         
       # Install required dependencies for static code analysis
       - name: Install dependencies
