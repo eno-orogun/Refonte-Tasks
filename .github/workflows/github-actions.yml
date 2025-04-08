@@ -23,6 +23,10 @@ jobs:
         with:
           python-version: '3.11'
 
+      - name: List files for debugging
+        run: |
+          ls  -R
+          
       # Install required dependencies for static code analysis
       - name: Install dependencies
         run: |
