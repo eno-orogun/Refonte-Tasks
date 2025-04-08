@@ -28,7 +28,6 @@ jsonschema==4.10.3
 launchpadlib==1.11.0
 lazr.restfulclient==0.14.6
 lazr.uri==1.0.6
-LibAppArmor==4.0.1
 louis==3.29.0
 M2Crypto==0.40.1
 markdown-it-py==3.0.0
