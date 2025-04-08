@@ -33,7 +33,7 @@ jobs:
       # Run static code analysis with pylint
       - name: Run static code analysis
         run: |
-          pylint **/*.py
+          pylint app/**/*.py
 
       # Setup Docker Buildx
       - name: Set up Docker Buildx
