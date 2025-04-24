@@ -71,8 +71,9 @@ jobs:
       - name: Scan Docker Image with Trivy
         uses: aquasecurity/trivy-action@0.28.0
         with:
-          image: todo-app:latest
+          image-ref: todo-app:latest
           format: 'table'
-
+          scan-type: image
+          input: false
           
     
