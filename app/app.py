@@ -1,8 +1,9 @@
 """Flask app for managing a simple task list with add and delete functionality."""
-from flask import Flask, request, jsonify, render_template
+
 import os
 import random
 import string
+from flask import Flask, request, jsonify, render_template
 
 app = Flask(__name__)
 # Use environment variable or random generation for secret key (avoids hardcoding)
@@ -15,10 +16,13 @@ tasks = []
 
 @app.route('/')
 def home():
+    """Render the home page with the current list of tasks."""
     return render_template('index.html', tasks=tasks)
 
 @app.route('/add', methods=['POST'])
 def add_task():
+    """Add a new task from the content."""
+
     task_content = request.form.get('content')  # Get user input
     if task_content:
         # Input validation to prevent XSS
@@ -26,12 +30,12 @@ def add_task():
         if len(task_content) > 0:
             tasks.append(task_content)
             return jsonify({"message": "Task added successfully!"}), 200
-        else:
-            return jsonify({"error": "Content cannot be empty!"}), 400
+        return jsonify({"error": "Content cannot be empty!"}), 400
     return jsonify({"error": "Content cannot be empty!"}), 400
-
+    
 @app.route('/delete', methods=['POST'])
 def delete_task():
+    """Delete a task."""
     try:
         task_index = request.form.get('index')
         # Validate the index to ensure it is an integer and within range
@@ -41,8 +45,8 @@ def delete_task():
         if 0 <= task_index < len(tasks):
             tasks.pop(task_index)
             return jsonify({"message": "Task deleted successfully!"}), 200
-        else:
-            return jsonify({"error": "Invalid task index!"}), 400
+      
+        return jsonify({"error": "Invalid task index!"}), 400
     except ValueError:
         return jsonify({"error": "Invalid index format!"}), 400
     except Exception as e:
