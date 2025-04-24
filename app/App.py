@@ -1,3 +1,4 @@
+"""Flask app for managing a simple task list with add and delete functionality."""
 from flask import Flask, request, jsonify, render_template
 import os
 import random
@@ -5,7 +6,9 @@ import string
 
 app = Flask(__name__)
 # Use environment variable or random generation for secret key (avoids hardcoding)
-app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', ''.join(random.choices(string.ascii_letters + string.digits, k=24)))
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', ''.join(
+    random.choices(string.ascii_letters + string.digits, k=24)
+))
 
 # Mock database (tasks list)
 tasks = []
