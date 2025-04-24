@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /app
 
 # Copy the requirements.txt file into the container
-COPY requirements.txt /app/
+COPY app/requirements.txt /app/
 
 RUN pip install --upgrade pip
 
