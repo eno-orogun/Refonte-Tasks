@@ -32,7 +32,6 @@ def add_task():
             return jsonify({"message": "Task added successfully!"}), 200
         return jsonify({"error": "Content cannot be empty!"}), 400
     return jsonify({"error": "Content cannot be empty!"}), 400
-    
 @app.route('/delete', methods=['POST'])
 def delete_task():
     """Delete a task."""
@@ -45,12 +44,12 @@ def delete_task():
         if 0 <= task_index < len(tasks):
             tasks.pop(task_index)
             return jsonify({"message": "Task deleted successfully!"}), 200
-      
         return jsonify({"error": "Invalid task index!"}), 400
     except ValueError:
         return jsonify({"error": "Invalid index format!"}), 400
     except Exception as e:
         # Handle any unexpected exceptions gracefully
+        app.logger.error(f"Unexpected error occurred: {e}")
         return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
 if __name__ == '__main__':
