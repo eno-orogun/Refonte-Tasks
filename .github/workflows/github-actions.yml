@@ -74,6 +74,6 @@ jobs:
           image-ref: todo-app:latest
           format: 'table'
           scan-type: image
-          input: false
+          
           
     
