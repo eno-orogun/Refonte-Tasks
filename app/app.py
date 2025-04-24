@@ -47,7 +47,7 @@ def delete_task():
         return jsonify({"error": "Invalid task index!"}), 400
     except ValueError:
         return jsonify({"error": "Invalid index format!"}), 400
-    except Exception as e:
+    except (TypeError, IndexError) as e:
         # Handle any unexpected exceptions gracefully
         app.logger.error(f"Unexpected error occurred: {e}")
         return jsonify({"error": f"An error occurred: {str(e)}"}), 500
