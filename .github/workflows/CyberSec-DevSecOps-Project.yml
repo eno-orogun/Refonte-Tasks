@@ -1,0 +1,111 @@
+name:  Juice Shop Security Pipeline
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  # 1. Container security scanning with Grype + Trivy
+  container-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build Docker image
+        run: docker build -t juice-shop:${{ github.sha }} -f Dockerfile .
+
+      - name: Scan with Grype
+        uses: anchore/grype-action@v1
+        with:
+          image: juice-shop:${{ github.sha }}
+          output: grype-results.json
+
+      - name: Scan with Trivy
+        uses: aquasecurity/trivy-action@v0.4.0
+        with:
+          image-ref: juice-shop:${{ github.sha }}
+          format: json
+          output: trivy-results.json
+
+      - name: Upload container scan artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: container-scans
+          path: grype-results.json, trivy-results.json
+
+  # 2. SCA: Dependency scan (npm + node_modules)
+  dependency-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run npm audit
+        run: npm audit --json > npm-audit.json
+
+      - name: Run Snyk scan
+        uses: snyk/actions/node@v1
+        with:
+          args: --file=package.json --json
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+      - name: Upload dependency scan artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: dependency-scans
+          path: npm-audit.json, snyk-report.json
+
+  # 3. SAST: Semgrep
+  sast-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Semgrep
+        run: |
+          pip install semgrep
+
+      - name: Run Semgrep scan
+        run: semgrep --config auto --json --output semgrep-report.json ./juice-shop
+
+      - name: Upload SAST report
+        uses: actions/upload-artifact@v3
+        with:
+          name: sast-report
+          path: semgrep-report.json
+
+  # 4. DAST: Run OWASP ZAP against running container
+  dast-scan:
+    runs-on: ubuntu-latest
+    services:
+      juice-shop:
+        image: juice-shop:${{ github.sha }}
+        ports: ["3000:3000"]
+        options: >-
+          --health-cmd="curl --fail http://localhost:3000 || exit 1"
+          --health-interval=10s
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Wait for Juice Shop to be healthy
+        run: timeout 60s bash -c "until curl -sf http://localhost:3000; do sleep 5; done"
+
+      - name: Run OWASP ZAP baseline scan
+        uses: zaproxy/action-baseline@v0.11.0
+        with:
+          target: 'http://localhost:3000'
+        continue-on-error: true
+
+      - name: Upload DAST report
+        uses: actions/upload-artifact@v3
+        with:
+          name: dast-report
+          path: zap-baseline-report.html
+
