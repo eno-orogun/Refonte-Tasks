@@ -11,7 +11,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Build Docker image
-        run: docker build -t juice-shop:${{ github.sha }} -f Dockerfile .
+        run: docker build -t juice-shop:${{ github.sha }} -f Dockerfile1 .
 
       - name: Scan with Grype
         uses: anchore/grype-action@v1
